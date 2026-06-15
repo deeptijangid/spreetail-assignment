@@ -1,0 +1,6 @@
+__pycache__/
+*.db
+uploads/
+Updated_Assignment_Spreetail.pdf
+Updated_Assignment_Spreetail.txt
+extract_pdf.py
