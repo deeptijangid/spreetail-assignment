@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splitwise Clone - Login</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h1 { color: #5bc5a7; margin-bottom: 20px; }
+        select { width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+        button { background-color: #5bc5a7; color: white; border: none; padding: 14px 20px; border-radius: 6px; width: 100%; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #48a68b; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h1>Expense Share</h1>
+        <p>Login to manage group expenses</p>
+        <form action="{{ url_for('login') }}" method="POST">
+            <select name="user_id" required>
+                <option value="" disabled selected>Select your name</option>
+                {% for user in users %}
+                <option value="{{ user.id }}">{{ user.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Log In</button>
+        </form>
+    </div>
+</body>
+</html>

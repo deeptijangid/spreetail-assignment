@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Expense Share</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .header h1 { margin: 0; color: #333; }
+        .logout-btn { background: #ff4d4f; color: white; text-decoration: none; padding: 10px 16px; border-radius: 6px; }
+        .grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card h2 { margin-top: 0; color: #5bc5a7; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .balance-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .positive { color: #52c41a; font-weight: bold; }
+        .negative { color: #f5222d; font-weight: bold; }
+        .neutral { color: #8c8c8c; }
+        .btn { background-color: #5bc5a7; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        th { background-color: #fafafa; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome, {{ current_user.name }}</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Log Out</a>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Your Balances</h2>
+            {% for currency, cur_balances in balances.items() %}
+                <h3>{{ currency }}</h3>
+                {% for name, bal in cur_balances.items() %}
+                    {% if bal > 0.01 %}
+                        <div class="balance-item">
+                            <span>{{ name }}</span>
+                            <span class="positive">Gets back {{ "%.2f"|format(bal) }}</span>
+                        </div>
+                    {% elif bal < -0.01 %}
+                        <div class="balance-item">
+                            <span>{{ name }}</span>
+                            <span class="negative">Owes {{ "%.2f"|format(bal|abs) }}</span>
+                        </div>
+                    {% else %}
+                        <div class="balance-item">
+                            <span>{{ name }}</span>
+                            <span class="neutral">Settled up</span>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+
+            <h2 style="margin-top: 30px;">Import Data</h2>
+            <form action="{{ url_for('import_data') }}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".csv" required style="margin-bottom: 15px; width: 100%;">
+                <button type="submit" class="btn">Import CSV</button>
+            </form>
+            <p style="font-size: 12px; color: #888;">Note: Importing will clear existing data and recreate records.</p>
+        </div>
+
+        <div class="card">
+            <h2>Recent Expenses</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Paid By</th>
+                        <th>Amount</th>
+                        <th>Split Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exp in expenses[-15:]|reverse %}
+                    <tr>
+                        <td>{{ exp.date.strftime('%Y-%m-%d') if exp.date else '' }}</td>
+                        <td>{{ exp.description }}</td>
+                        <td>{{ exp.paid_by.name }}</td>
+                        <td>{{ exp.amount }} {{ exp.currency }}</td>
+                        <td>{{ exp.split_type|capitalize }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #888;">No expenses found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
