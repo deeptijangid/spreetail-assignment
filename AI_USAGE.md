@@ -1,7 +1,7 @@
 # AI Usage Log
 
 ## AI Tools Used
-- Gemini 3.1 Pro (High) (Integrated Agent)
+- Antigravity (Google DeepMind Integrated Agent) powered by Gemini 3.1 Pro
 
 ## Key Prompts Used
 - "Initialize a Flask application with SQLAlchemy models for Users, Expenses, ExpenseSplits, and Settlements."
